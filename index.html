@@ -3,98 +3,194 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>지성랜드 볼 게임 V60 - 신규 캐릭터 공필두 추가</title>
+<title>지성랜드 볼 게임 V63 - 기가은 리워크 & 김민제리얌</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  /* =========================================
+     [V63 UI 프리미엄 오버라이드 - 까리한 디자인 추가]
+     ========================================= */
+  
+  /* 전반적인 애니메이션 및 효과 */
+  @keyframes pulseGlow { 
+    0% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.4); } 
+    50% { text-shadow: 0 0 25px rgba(0, 255, 255, 0.9), 0 0 5px #fff; } 
+    100% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.4); } 
+  }
+  @keyframes slideUpFade { 
+    from { opacity: 0; transform: translate(-50%, -40%); } 
+    to { opacity: 1; transform: translate(-50%, -50%); } 
+  }
+  @keyframes blink { 
+    0%, 100% { opacity: 1; } 
+    50% { opacity: 0.5; } 
+  }
+
+  /* 메인 타이틀 및 공통 텍스트 */
+  .main-title { animation: pulseGlow 2.5s infinite alternate; letter-spacing: 2px; }
+  h2 { letter-spacing: 1px; border-bottom: 2px solid var(--border-fluent); padding-bottom: 10px; display: inline-block; }
+
+  /* 프리미엄 버튼 스타일 */
+  .btn { 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); 
+  }
+  .btn::after { 
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; 
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent); 
+    transform: rotate(45deg) translate(-100%, -100%); transition: 0.5s ease-in-out; 
+  }
+  .btn:hover::after { transform: rotate(45deg) translate(100%, 100%); }
+  .btn:hover { box-shadow: 0 0 15px rgba(255,255,255,0.2); }
+
+  /* 패치노트 모달 (사이버펑크 패널 느낌) */
+  #patch-note-btn { background: rgba(232, 67, 147, 0.2); border-color: #e84393; color: #ff9ff3; text-shadow: 0 0 5px #e84393; transition: all 0.3s; }
+  #patch-note-btn:hover { background: rgba(232, 67, 147, 0.4); box-shadow: 0 0 15px #e84393; transform: scale(1.05); }
+  
+  #patch-note-modal { 
+    border: 2px solid var(--neon-purple); background: linear-gradient(135deg, rgba(20,20,35,0.95), rgba(10,10,15,0.98)); 
+    box-shadow: 0 0 40px rgba(155, 89, 182, 0.5); animation: slideUpFade 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+  }
+  #patch-note-modal h3 { text-shadow: 0 0 10px #fff; }
+  #patch-note-modal li { margin-bottom: 10px; border-left: 3px solid var(--neon-purple); padding-left: 10px; background: rgba(255,255,255,0.02); }
+
+  /* 캐릭터 선택 창 */
+  #selection-status { font-size: 16px; border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 255, 255, 0.3); animation: blink 2s infinite; color: #00ffff; }
+  .class-title { text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+  .class-title.tanker { border-bottom: 2px solid #ff4757; }
+  .class-title.dealer { border-bottom: 2px solid #2ed573; }
+  .class-title.util { border-bottom: 2px solid #9b59b6; }
+  
+  .char-card { 
+    border: 1px solid rgba(255,255,255,0.1); background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%); 
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.02); 
+  }
+  .char-card:hover { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0,255,255,0.4); z-index: 10; }
+
+  /* 캐릭터 도감 (사전) */
+  #dict-screen .dict-container { max-width: 600px; }
+  .dict-list { max-height: 150px; overflow-y: auto; padding-right: 5px; }
+  .dict-list::-webkit-scrollbar { width: 4px; }
+  .dict-tab { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+  .dict-tab:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
+  .dict-tab.active { background: rgba(155, 89, 182, 0.2); border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(155, 89, 182, 0.5); transform: scale(1.02); }
+  
+  #dict-detail-content { 
+    background: linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(0,0,0,0.6)); 
+    border-top: 4px solid var(--neon-purple); box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+  }
+  .dict-detail-desc { border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+  .stat-bar-fill { box-shadow: 0 0 8px currentColor; }
+
+  /* 게임 인게임 HUD (격투 게임 스타일 체력바) */
+  #battle-ui-container { border-bottom: 2px solid var(--neon-blue); box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+  .hp-bar-shell, .cool-bar-shell { transform: skewX(-15deg); border-radius: 2px; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+  .hp-fill, .cool-fill { transform: skewX(0deg); }
+  .hp-counter-text { transform: skewX(15deg); font-style: italic; font-weight: 800; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; }
+  .p-name-label { text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px currentColor; }
+</style>
 </head>
 <body>
 
-<button id="patch-note-btn" class="btn" style="position: absolute; top: 15px; right: 15px; z-index: 100; padding: 8px 16px; font-size: 13px;">📝 패치노트</button>
-<div id="patch-note-modal" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-fluent); padding: 25px; z-index: 101; color: white; width: 340px; border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.5);">
-<h3 style="color: #fff; margin-top: 0; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">V60 패치노트</h3>
-<ul style="font-size: 13px; padding-left: 20px; text-align: left; line-height: 1.7; color: rgba(255,255,255,0.8);">
-<li><span style="color:#2c3e50; font-weight:600;">[신규 영웅]</span> '공필두병은(공필두)'가 탱커로 참전합니다! 시간에 따라 무장지대 ➔ 무장요새 ➔ 무장성채로 진화하며 막강한 포탑을 전개합니다. (쿨타임 관련 방해 효과 면역)</li>
-<li><span style="color:#ff4757; font-weight:600;">[김민채]</span> 3스킬 '코끼리의 왕' 넉백 및 벽 충돌 시 10 추가 피해 메커니즘이 안정화되었습니다.</li>
-<li><span style="color:#8B4513; font-weight:600;">[건숭이]</span> 2스킬 '원숭이의 비'가 맵 위에서 쏟아지는 직관적인 투사체로 완벽히 리워크되었습니다.</li>
-</ul>
-<button onclick="document.getElementById('patch-note-modal').style.display='none'" class="btn" style="width: 100%; margin-top: 20px;">닫기</button>
+<button id="patch-note-btn" class="btn" style="position: absolute; top: 15px; right: 15px; z-index: 100; padding: 8px 16px; font-size: 13px;">📝 V63 패치노트</button>
+
+<div id="patch-note-modal" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel-bg); backdrop-filter: blur(20px); border: 1px solid var(--border-fluent); padding: 25px; z-index: 101; color: white; width: 380px; border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.5);">
+  <h3 style="color: #fff; margin-top: 0; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+    <span>⚡ V63 업데이트</span>
+    <span style="font-size: 12px; color: var(--neon-purple); border: 1px solid var(--neon-purple); padding: 2px 6px; border-radius: 4px;">NEW</span>
+  </h3>
+  <ul style="font-size: 13.5px; padding-left: 10px; text-align: left; line-height: 1.8; color: rgba(255,255,255,0.9); list-style-type: none;">
+    <li><span style="color:#e84393; font-weight:700;">[신규 유틸: 🫦 김민제리얌]</span> 퀸카의 먹방! 본체 보호막 및 랜덤 반찬(시금치/김치/버섯) 투척으로 무장한 신규 캐릭터 합류!</li>
+    <li><span style="color:#bdc3c7; font-weight:700;">[기가은 대규모 리워크]</span> 최대 체력 200 상향, 기가빔 범위 50% 확장(초당 25뎀), 대시 튕김 6회 및 쿨타임 감소! (메카 날개 디자인 변경✨)</li>
+    <li><span style="color:#ff9ff3; font-weight:700;">[V티비]</span> 도네이션: 좋은 힐 회복량 50 → 40 밸런스 패치.</li>
+    <li><span style="color:#8B4513; font-weight:700;">[건숭이]</span> 원숭이가 되 충돌 데미지 상향 유지.</li>
+  </ul>
+  <button onclick="document.getElementById('patch-note-modal').style.display='none'" class="btn" style="width: 100%; margin-top: 20px; background: rgba(255,255,255,0.1);">확인 및 닫기</button>
 </div>
 
 <div id="main-home-screen" class="game-screen">
-<div class="main-title">지성랜드 볼 게임</div>
-<div class="main-subtitle">Custom Hero Dynamic Simulator V60</div>
-<div class="mode-btn-container">
-<button class="btn" style="background: rgba(46, 213, 115, 0.2); border-color: rgba(46, 213, 115, 0.4);" id="btn-start-game">GAME START ⚔️</button>
-<button class="btn" id="btn-open-dict-home">BOOK 사전/도감 📖</button>
-</div>
+  <div class="main-title">지성랜드 볼 게임</div>
+  <div class="main-subtitle">CUSTOM HERO DYNAMIC SIMULATOR V63</div>
+  <div class="mode-btn-container">
+    <button class="btn" style="background: rgba(46, 213, 115, 0.2); border-color: rgba(46, 213, 115, 0.5); color: #2ed573;" id="btn-start-game">GAME START ⚔️</button>
+    <button class="btn" style="background: rgba(0, 255, 255, 0.1); border-color: rgba(0, 255, 255, 0.3); color: #00ffff;" id="btn-open-dict-home">HERO DICTIONARY 📖</button>
+  </div>
 </div>
 
 <div id="mode-select-screen" class="game-screen">
-<h2>SELECT GAME MODE</h2>
-<div class="mode-btn-container">
-<button class="btn" id="btn-mode-1v1">1 대 1 대전 모드</button>
-<button class="btn" style="background: rgba(155, 89, 182, 0.2); border-color: rgba(155, 89, 182, 0.4);" id="btn-mode-brawl">1 대 1 대 1 난투전 🔥</button>
-<button class="btn" style="background: rgba(46, 204, 113, 0.2); border-color: rgba(46, 204, 113, 0.4);" id="btn-mode-practice">실험장 (연습 모드) 🧪</button>
-<button class="btn" id="btn-open-dict-mode">캐릭터 사전 보기 📖</button>
-<button class="btn" style="background: rgba(255, 255, 255, 0.05); padding: 10px; font-size: 13px;" id="btn-mode-back">뒤로가기 ↩️</button>
-</div>
+  <h2>SELECT GAME MODE</h2>
+  <div class="mode-btn-container">
+    <button class="btn" style="background: rgba(241, 196, 15, 0.15); border-color: rgba(241, 196, 15, 0.4); color: #f1c40f;" id="btn-mode-1v1">1 대 1 듀얼 모드 ⚔️</button>
+    <button class="btn" style="background: rgba(255, 71, 87, 0.15); border-color: rgba(255, 71, 87, 0.4); color: #ff4757;" id="btn-mode-brawl">1 대 1 대 1 난투전 🔥</button>
+    <button class="btn" style="background: rgba(46, 204, 113, 0.15); border-color: rgba(46, 204, 113, 0.4); color: #2ecc71;" id="btn-mode-practice">훈련장 (연습 모드) 🧪</button>
+    <button class="btn" style="background: rgba(155, 89, 182, 0.15); border-color: rgba(155, 89, 182, 0.4); color: #9b59b6; margin-top: 10px;" id="btn-open-dict-mode">영웅 사전 열람 📖</button>
+    <button class="btn" style="background: rgba(255, 255, 255, 0.05); padding: 10px; font-size: 13px; color: #aaa;" id="btn-mode-back">뒤로가기 ↩️</button>
+  </div>
 </div>
 
 <div id="dict-screen" class="game-screen">
-<h2>📖 HERO DICTIONARY 📖</h2>
-<div class="dict-container">
-<div class="dict-list" id="dict-tabs-grid"></div>
-<div class="dict-detail-box" id="dict-detail-content"></div>
-<button class="btn" style="background: rgba(255, 255, 255, 0.05); padding: 10px; font-size: 13px;" id="btn-close-dict">돌아가기 ↩️</button>
-</div>
+  <h2 style="color: var(--neon-purple); text-shadow: 0 0 10px var(--neon-purple);">📖 HERO DICTIONARY 📖</h2>
+  <div class="dict-container">
+    <div class="dict-list" id="dict-tabs-grid"></div>
+    <div class="dict-detail-box" id="dict-detail-content"></div>
+    <button class="btn" style="background: rgba(255, 255, 255, 0.05); padding: 10px; font-size: 13px; margin-top: 10px;" id="btn-close-dict">돌아가기 ↩️</button>
+  </div>
 </div>
 
 <div id="char-select-screen" class="game-screen">
-<h2>⚔️ SELECT HERO ⚔️</h2>
-<div id="selection-status">1P 대기중...</div>
-<div id="char-selection-wrapper">
-<div class="class-container" id="container-tanker"><div class="class-title tanker">🛡️ TANKER (탱커)</div><div class="grid" id="grid-tanker"></div></div>
-<div class="class-container" id="container-dealer"><div class="class-title dealer">⚔️ DAMAGE DEALER (데미지 딜러)</div><div class="grid" id="grid-dealer"></div></div>
-<div class="class-container" id="container-util"><div class="class-title util">⚡ UTILITY (유틸리티)</div><div class="grid" id="grid-util"></div></div>
-</div>
-<button class="btn" style="background: rgba(255, 255, 255, 0.05); padding: 8px 20px; font-size: 13px; margin-top: 15px;" id="btn-char-back">처음으로 ↩️</button>
+  <h2>⚔️ SELECT YOUR HERO ⚔️</h2>
+  <div id="selection-status">1P 대기중... 영웅을 고르세요</div>
+  <div id="char-selection-wrapper">
+    <div class="class-container" id="container-tanker">
+      <div class="class-title tanker" style="color: #ff4757;">🛡️ TANKER (탱커)</div>
+      <div class="grid" id="grid-tanker"></div>
+    </div>
+    <div class="class-container" id="container-dealer">
+      <div class="class-title dealer" style="color: #2ed573;">⚔️ DAMAGE DEALER (딜러)</div>
+      <div class="grid" id="grid-dealer"></div>
+    </div>
+    <div class="class-container" id="container-util">
+      <div class="class-title util" style="color: #9b59b6;">⚡ UTILITY (유틸리티)</div>
+      <div class="grid" id="grid-util"></div>
+    </div>
+  </div>
+  <button class="btn" style="background: rgba(255, 255, 255, 0.05); padding: 8px 20px; font-size: 13px; margin-top: 15px;" id="btn-char-back">처음으로 ↩️</button>
 </div>
 
 <div id="game-container">
-<div id="battle-ui-container">
-<button class="out-exit-btn" id="btn-exit-game">EXIT ↩️</button>
-<div class="ui-row-top">
-<div class="p-side-box p1-side">
-<div id="p1-name" class="p-name-label" style="color: var(--neon-red);">1P</div>
-<div class="hp-bar-shell"><div id="p1-hp-bar" class="hp-fill p1-fill"></div><div id="p1-hp-text" class="hp-counter-text">0/0</div></div>
-<div class="cool-bar-shell"><div id="p1-cool-bar" class="cool-fill"></div></div>
-</div>
-<div class="p-side-box p2-side">
-<div id="p2-name" class="p-name-label" style="color: var(--neon-green);">2P</div>
-<div class="hp-bar-shell"><div id="p2-hp-bar" class="hp-fill p2-fill"></div><div id="p2-hp-text" class="hp-counter-text">0/0</div></div>
-<div class="cool-bar-shell" style="align-self: flex-end;"><div id="p2-cool-bar" class="cool-fill"></div></div>
-</div>
-</div>
-<div class="speed-control-panel">
-<button class="speed-btn" onclick="setGameSpeed(0.5)">×0.5</button>
-<button class="speed-btn active" onclick="setGameSpeed(1.0)">×1.0</button>
-<button class="speed-btn" onclick="setGameSpeed(1.5)">×1.5</button>
-<button class="speed-btn" onclick="setGameSpeed(2.0)">×2.0</button>
-</div>
-<div class="p3-center-box" id="p3-ui-box">
-<div id="p3-name" class="p-name-label" style="color: var(--neon-yellow);">3P</div>
-<div class="hp-bar-shell"><div id="p3-hp-bar" class="hp-fill p3-fill"></div><div id="p3-hp-text" class="hp-counter-text">0/0</div></div>
-<div class="cool-bar-shell" style="width:100%;"><div id="p3-cool-bar" class="cool-fill"></div></div>
-</div>
-</div>
-<div id="arena-wrapper">
-<div id="countdown-overlay">READY</div>
-<canvas id="canvas"></canvas>
-</div>
+  <div id="battle-ui-container">
+    <button class="out-exit-btn" id="btn-exit-game">EXIT ↩️</button>
+    <div class="ui-row-top">
+      <div class="p-side-box p1-side">
+        <div id="p1-name" class="p-name-label" style="color: var(--neon-red);">1P</div>
+        <div class="hp-bar-shell"><div id="p1-hp-bar" class="hp-fill p1-fill"></div><div id="p1-hp-text" class="hp-counter-text">0/0</div></div>
+        <div class="cool-bar-shell"><div id="p1-cool-bar" class="cool-fill"></div></div>
+      </div>
+      <div class="p-side-box p2-side">
+        <div id="p2-name" class="p-name-label" style="color: var(--neon-green);">2P</div>
+        <div class="hp-bar-shell"><div id="p2-hp-bar" class="hp-fill p2-fill"></div><div id="p2-hp-text" class="hp-counter-text">0/0</div></div>
+        <div class="cool-bar-shell" style="align-self: flex-end;"><div id="p2-cool-bar" class="cool-fill"></div></div>
+      </div>
+    </div>
+    <div class="speed-control-panel">
+      <button class="speed-btn" onclick="setGameSpeed(0.5)">×0.5</button>
+      <button class="speed-btn active" onclick="setGameSpeed(1.0)">×1.0</button>
+      <button class="speed-btn" onclick="setGameSpeed(1.5)">×1.5</button>
+      <button class="speed-btn" onclick="setGameSpeed(2.0)">×2.0</button>
+    </div>
+    <div class="p3-center-box" id="p3-ui-box">
+      <div id="p3-name" class="p-name-label" style="color: var(--neon-yellow);">3P</div>
+      <div class="hp-bar-shell"><div id="p3-hp-bar" class="hp-fill p3-fill"></div><div id="p3-hp-text" class="hp-counter-text">0/0</div></div>
+      <div class="cool-bar-shell" style="width:100%;"><div id="p3-cool-bar" class="cool-fill"></div></div>
+    </div>
+  </div>
+  <div id="arena-wrapper">
+    <div id="countdown-overlay">READY</div>
+    <canvas id="canvas"></canvas>
+  </div>
 </div>
 
 <div id="result-screen" class="game-screen">
-<div id="result-title">WINNER!</div>
-<button class="btn" id="btn-next-match">NEXT MATCH 🔄</button>
+  <div id="result-title" style="text-shadow: 0 0 20px currentColor;">WINNER!</div>
+  <button class="btn" style="background: rgba(255,255,255,0.1); font-size: 16px; padding: 15px 30px;" id="btn-next-match">NEXT MATCH 🔄</button>
 </div>
 
 <script src="game.js"></script>
